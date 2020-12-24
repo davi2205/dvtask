@@ -40,3 +40,13 @@ func NewFixedTask(start, end time.Time) (*Task, error) {
 
 	return &Task{start: start, end: end, fixed: true}, nil
 }
+
+// Start returns the start time of the task t. Might be zero if not scheduled yet.
+func (t *Task) Start() time.Time {
+	return t.start
+}
+
+// End returns the end time of the task t. Might be zero + duration if not scheduled yet.
+func (t *Task) End() time.Time {
+	return t.end
+}
