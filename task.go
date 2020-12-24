@@ -17,16 +17,6 @@ type Task struct {
 	next     *Task
 }
 
-// NewFixedTask creates a new fixed task, that is, a task that cannot be moved
-// by other tasks during scheduling.
-func NewFixedTask(start, end time.Time) (*Task, error) {
-	if start.After(end) {
-		return nil, errors.New("start must happen before end")
-	}
-
-	return &Task{start: start, end: end, fixed: true}
-}
-
 // NewTask creates a new "moving" task, that is, a task that might be moved
 // during scheduling.
 func NewTask(duration time.Duration) (*Task, error) {
@@ -39,4 +29,14 @@ func NewTask(duration time.Duration) (*Task, error) {
 		end:   time.Time{}.Add(duration),
 		fixed: false, // Probably redundant
 	}, nil
+}
+
+// NewFixedTask creates a new fixed task, that is, a task that cannot be moved
+// by other tasks during scheduling.
+func NewFixedTask(start, end time.Time) (*Task, error) {
+	if start.After(end) {
+		return nil, errors.New("start must happen before end")
+	}
+
+	return &Task{start: start, end: end, fixed: true}, nil
 }
