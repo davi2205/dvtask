@@ -46,7 +46,12 @@ func (t *Task) Start() time.Time {
 	return t.start
 }
 
-// End returns the end time of the task t. Might be zero + duration if not scheduled yet.
+// End returns the end time of the task t. Might be zero + duration if not scheduled yet (see Duration).
 func (t *Task) End() time.Time {
 	return t.end
+}
+
+// Duration returns the duration of the task (in nanoseconds).
+func (t *Task) Duration() time.Duration {
+	return t.end.Sub(t.start)
 }
