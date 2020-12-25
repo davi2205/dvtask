@@ -28,13 +28,13 @@ func (s *Scheduler) ScheduledTaskAt(time time.Time) *Task {
 	return nil
 }
 
-// ScheduledTasksInInterval returns the first and last scheduled tasks within the given interval.
-// Returns nil, nil if no tasks are found within the interval. To be tested.
-func (s *Scheduler) ScheduledTasksInInterval(start, end time.Time) (first, last *Task) {
+// ScheduledTasksInTimeInterval returns the first and last scheduled tasks within the given time interval.
+// Returns nil, nil if no tasks are found within the time interval. To be tested.
+func (s *Scheduler) ScheduledTasksInTimeInterval(start, end time.Time) (first, last *Task) {
 	for currentTask := s.firstTask; currentTask != nil; currentTask = currentTask.next {
 		if currentTask.IntersectsWithTimeInterval(start, end) {
 			if first != nil {
-				return
+				break
 			} else {
 				continue
 			}

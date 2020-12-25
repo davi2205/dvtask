@@ -75,3 +75,7 @@ func (t *Task) IntersectsWithTask(task *Task) bool {
 func (t *Task) ContainsTime(time time.Time) bool {
 	return !(t.start.After(time) || t.end.Before(time))
 }
+
+//func (t *Task) FreeTimeAfterwards() (start, end time.Time) {
+	
+//}

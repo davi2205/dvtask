@@ -1,26 +1,19 @@
 // Copyright (c) 2020 Davi Villalva.
 // license can be found in the LICENSE file.
 
-package dvtask_test
+package dvtask
 
 import (
 	"testing"
 	"time"
-
-	"github.com/davi2205/dvtask"
-)
-
-const (
-	oneMinute  time.Duration = 60_000_000_000
-	twoMinutes time.Duration = 120_000_000_000
 )
 
 var (
 	now             = time.Now()
-	oneMinuteAgo    = now.Add(-oneMinute)
-	oneMinuteLater  = now.Add(oneMinute)
-	twoMinutesAgo   = now.Add(-twoMinutes)
-	twoMinutesLater = now.Add(twoMinutes)
+	oneMinuteAgo    = now.Add(-time.Minute)
+	oneMinuteLater  = now.Add(time.Minute)
+	twoMinutesAgo   = now.Add(-2 * time.Minute)
+	twoMinutesLater = now.Add(2 * time.Minute)
 )
 
 func TestNewTask(t *testing.T) {
@@ -32,12 +25,12 @@ func TestNewTask(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{"valid", args{oneMinute}, false},
-		{"invalid", args{-oneMinute}, true},
+		{"valid", args{time.Minute}, false},
+		{"invalid", args{-time.Minute}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := dvtask.NewTask(tt.args.duration)
+			_, err := NewTask(tt.args.duration)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewTask() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -61,7 +54,7 @@ func TestNewFixedTask(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := dvtask.NewFixedTask(tt.args.start, tt.args.end)
+			_, err := NewFixedTask(tt.args.start, tt.args.end)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewFixedTask() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -88,12 +81,15 @@ func TestTask_IntersectsWithTimeInterval(t *testing.T) {
 		{"intersection", fields{twoMinutesAgo, now}, args{oneMinuteAgo, oneMinuteLater}, true},
 		{"nointersection", fields{twoMinutesAgo, oneMinuteAgo}, args{now, oneMinuteLater}, false},
 		{"edgeintersection", fields{oneMinuteAgo, now}, args{now, oneMinuteLater}, true},
-		{"edgeintersection_inv", fields{now, oneMinuteLater}, args{oneMinuteAgo, now}, true},
-		{"edgeintersection_1", fields{now, oneMinuteLater}, args{oneMinuteLater, twoMinutesLater}, true},
+		{"edgeintersectioninv", fields{now, oneMinuteLater}, args{oneMinuteAgo, now}, true},
+		{"edgeintersection1", fields{now, oneMinuteLater}, args{oneMinuteLater, twoMinutesLater}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			task, _ := dvtask.NewFixedTask(tt.fields.start, tt.fields.end)
+			task := &Task{
+				start: tt.fields.start,
+				end:   tt.fields.end,
+			}
 			if got := task.IntersectsWithTimeInterval(tt.args.start, tt.args.end); got != tt.want {
 				t.Errorf("Task.IntersectsWithTimeInterval() = %v, want %v", got, tt.want)
 			}
@@ -115,13 +111,19 @@ func TestTask_IntersectsWithTask(t *testing.T) {
 		{"intersection", fields{twoMinutesAgo, now}, fields{oneMinuteAgo, oneMinuteLater}, true},
 		{"nointersection", fields{twoMinutesAgo, oneMinuteAgo}, fields{now, oneMinuteLater}, false},
 		{"edgeintersection", fields{oneMinuteAgo, now}, fields{now, oneMinuteLater}, true},
-		{"edgeintersection_inv", fields{now, oneMinuteLater}, fields{oneMinuteAgo, now}, true},
-		{"edgeintersection_1", fields{now, oneMinuteLater}, fields{oneMinuteLater, twoMinutesLater}, true},
+		{"edgeintersectioninv", fields{now, oneMinuteLater}, fields{oneMinuteAgo, now}, true},
+		{"edgeintersection1", fields{now, oneMinuteLater}, fields{oneMinuteLater, twoMinutesLater}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			taskA, _ := dvtask.NewFixedTask(tt.aFields.start, tt.aFields.end)
-			taskB, _ := dvtask.NewFixedTask(tt.bFields.start, tt.bFields.end)
+			taskA := &Task{
+				start: tt.aFields.start,
+				end:   tt.aFields.end,
+			}
+			taskB := &Task{
+				start: tt.bFields.start,
+				end:   tt.bFields.end,
+			}
 			if got := taskA.IntersectsWithTask(taskB); got != tt.want {
 				t.Errorf("Task.IntersectsWithTask() = %v, want %v", got, tt.want)
 			}
@@ -149,7 +151,10 @@ func TestTask_ContainsTime(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			task, _ := dvtask.NewFixedTask(tt.fields.start, tt.fields.end)
+			task := &Task{
+				start: tt.fields.start,
+				end:   tt.fields.end,
+			}
 			if got := task.ContainsTime(tt.args.time); got != tt.want {
 				t.Errorf("Task.ContainsTime() = %v, want %v", got, tt.want)
 			}
