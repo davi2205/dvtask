@@ -12,7 +12,7 @@ import (
 type Task struct {
 	start    time.Time
 	end      time.Time
-	fixed    bool
+	isFixed  bool
 	previous *Task
 	next     *Task
 }
@@ -25,9 +25,9 @@ func NewTask(duration time.Duration) (*Task, error) {
 	}
 
 	return &Task{
-		start: time.Time{},
-		end:   time.Time{}.Add(duration),
-		fixed: false, // Probably redundant
+		start:   time.Time{},
+		end:     time.Time{}.Add(duration),
+		isFixed: false, // Probably redundant
 	}, nil
 }
 
@@ -38,7 +38,7 @@ func NewFixedTask(start, end time.Time) (*Task, error) {
 		return nil, errors.New("start must happen before end")
 	}
 
-	return &Task{start: start, end: end, fixed: true}, nil
+	return &Task{start: start, end: end, isFixed: true}, nil
 }
 
 // Start returns the start time of the task t. Might be zero if not scheduled yet.
@@ -49,6 +49,11 @@ func (t *Task) Start() time.Time {
 // End returns the end time of the task t. Might be zero + duration if not scheduled yet (see Duration).
 func (t *Task) End() time.Time {
 	return t.end
+}
+
+// IsFixed returns whether the task is fixed or not.
+func (t *Task) IsFixed() bool {
+	return t.isFixed
 }
 
 // Duration returns the duration of the task (in nanoseconds).
