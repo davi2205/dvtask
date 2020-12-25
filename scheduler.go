@@ -21,7 +21,7 @@ func NewScheduler() *Scheduler {
 // ScheduledTaskAt returns the scheduled task at a specific time. To be tested.
 func (s *Scheduler) ScheduledTaskAt(time time.Time) *Task {
 	for currentTask := s.firstTask; currentTask != nil; currentTask = currentTask.next {
-		if !(time.Before(currentTask.start) || time.After(currentTask.end)) {
+		if currentTask.ContainsTime(time) {
 			return currentTask
 		}
 	}
@@ -32,7 +32,7 @@ func (s *Scheduler) ScheduledTaskAt(time time.Time) *Task {
 // Returns nil, nil if no tasks are found within the interval. To be tested.
 func (s *Scheduler) ScheduledTasksInInterval(start, end time.Time) (first, last *Task) {
 	for currentTask := s.firstTask; currentTask != nil; currentTask = currentTask.next {
-		if currentTask.end.Before(start) || currentTask.start.After(end) {
+		if currentTask.IntersectsWithInterval(start, end) {
 			if first != nil {
 				return
 			} else {
