@@ -4,6 +4,7 @@
 package dvtask
 
 import (
+	"errors"
 	"time"
 )
 
@@ -17,7 +18,7 @@ func NewScheduler() *Scheduler {
 	return &Scheduler{}
 }
 
-// ScheduledTaskAt gets the schedule task at a specific time. To be tested.
+// ScheduledTaskAt returns the scheduled task at a specific time. To be tested.
 func (s *Scheduler) ScheduledTaskAt(time time.Time) *Task {
 	for currentTask := s.firstTask; currentTask != nil; currentTask = currentTask.next {
 		if !(time.Before(currentTask.start) || time.After(currentTask.end)) {
@@ -25,4 +26,37 @@ func (s *Scheduler) ScheduledTaskAt(time time.Time) *Task {
 		}
 	}
 	return nil
+}
+
+// ScheduledTasksInInterval returns the first and last scheduled tasks within the given interval.
+// Returns nil, nil if no tasks are found within the interval. To be tested.
+func (s *Scheduler) ScheduledTasksInInterval(start, end time.Time) (first, last *Task) {
+	for currentTask := s.firstTask; currentTask != nil; currentTask = currentTask.next {
+		if currentTask.end.Before(start) || currentTask.start.After(end) {
+			if first != nil {
+				return
+			} else {
+				continue
+			}
+		}
+
+		if first == nil {
+			first = currentTask
+		}
+
+		last = currentTask
+	}
+	return
+}
+
+func (s *Scheduler) scheduleNonFixedTask(task *Task) error {
+	return errors.New("not implemented yet")
+}
+
+func (s *Scheduler) Schedule(task *Task) error {
+	if task.isFixed {
+		return errors.New("not implemented yet")
+	} else {
+		return s.scheduleNonFixedTask(task)
+	}
 }

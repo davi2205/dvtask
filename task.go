@@ -60,3 +60,13 @@ func (t *Task) IsFixed() bool {
 func (t *Task) Duration() time.Duration {
 	return t.end.Sub(t.start)
 }
+
+// IntersectsWithTask checks whether t intersects with task.
+func (t *Task) IntersectsWithTask(task *Task) bool {
+	return !(t.start.After(task.end) || t.end.Before(task.start))
+}
+
+// ContainsTime checks whether time happens within t's period.
+func (t *Task) ContainsTime(time time.Time) bool {
+	return !(t.start.After(time) || t.end.Before(time))
+}
