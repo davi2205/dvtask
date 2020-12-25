@@ -70,7 +70,7 @@ func TestNewFixedTask(t *testing.T) {
 	}
 }
 
-func TestTask_IntersectsWithInterval(t *testing.T) {
+func TestTask_IntersectsWithTimeInterval(t *testing.T) {
 	type fields struct {
 		start time.Time
 		end   time.Time
@@ -94,8 +94,8 @@ func TestTask_IntersectsWithInterval(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			task, _ := dvtask.NewFixedTask(tt.fields.start, tt.fields.end)
-			if got := task.IntersectsWithInterval(tt.args.start, tt.args.end); got != tt.want {
-				t.Errorf("Task.IntersectsWithInterval() = %v, want %v", got, tt.want)
+			if got := task.IntersectsWithTimeInterval(tt.args.start, tt.args.end); got != tt.want {
+				t.Errorf("Task.IntersectsWithTimeInterval() = %v, want %v", got, tt.want)
 			}
 		})
 	}

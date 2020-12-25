@@ -61,14 +61,14 @@ func (t *Task) Duration() time.Duration {
 	return t.end.Sub(t.start)
 }
 
-// IntersectsWithInterval checks whether t's period intersects with the given time interval.
-func (t *Task) IntersectsWithInterval(start, end time.Time) bool {
+// IntersectsWithTimeInterval checks whether t's period intersects with the given time interval.
+func (t *Task) IntersectsWithTimeInterval(start, end time.Time) bool {
 	return !(t.start.After(end) || t.end.Before(start))
 }
 
 // IntersectsWithTask checks whether t's period intersects with task's period.
 func (t *Task) IntersectsWithTask(task *Task) bool {
-	return t.IntersectsWithInterval(task.start, task.end)
+	return t.IntersectsWithTimeInterval(task.start, task.end)
 }
 
 // ContainsTime checks whether time happens within t's period.

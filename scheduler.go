@@ -32,7 +32,7 @@ func (s *Scheduler) ScheduledTaskAt(time time.Time) *Task {
 // Returns nil, nil if no tasks are found within the interval. To be tested.
 func (s *Scheduler) ScheduledTasksInInterval(start, end time.Time) (first, last *Task) {
 	for currentTask := s.firstTask; currentTask != nil; currentTask = currentTask.next {
-		if currentTask.IntersectsWithInterval(start, end) {
+		if currentTask.IntersectsWithTimeInterval(start, end) {
 			if first != nil {
 				return
 			} else {
