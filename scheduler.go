@@ -34,29 +34,48 @@ func (s *Scheduler) ScheduledTasksInTimeInterval(start, end time.Time) (first, l
 	for currentTask := s.firstTask; currentTask != nil; currentTask = currentTask.next {
 		if currentTask.IntersectsWithTimeInterval(start, end) {
 			if first != nil {
-				break
-			} else {
-				continue
+				return
 			}
+			continue
 		}
-
 		if first == nil {
 			first = currentTask
 		}
-
 		last = currentTask
 	}
 	return
 }
 
+// Not ready yet
 func (s *Scheduler) scheduleNonFixedTask(task *Task) error {
+	if s.firstTask == nil {
+		s.firstTask = task
+		return nil
+	}
+
+	for currentTask := s.firstTask; ; currentTask = currentTask.next {
+		if currentTask.priority < task.priority {
+
+			break
+		} else if currentTask.next == nil {
+
+			break
+		}
+	}
+
+	task.isScheduled = true
+
 	return errors.New("not implemented yet")
 }
 
+// Not ready yet
 func (s *Scheduler) Schedule(task *Task) error {
+	if task.isScheduled {
+		return errors.New("task already scheduled")
+	}
+
 	if task.isFixed {
 		return errors.New("not implemented yet")
-	} else {
-		return s.scheduleNonFixedTask(task)
 	}
+	return s.scheduleNonFixedTask(task)
 }

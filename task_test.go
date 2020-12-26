@@ -30,7 +30,7 @@ func TestNewTask(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := NewTask(tt.args.duration)
+			_, err := NewTask("", tt.args.duration, 0, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewTask() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -54,7 +54,7 @@ func TestNewFixedTask(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := NewFixedTask(tt.args.start, tt.args.end)
+			_, err := NewFixedTask("", tt.args.start, tt.args.end, 0, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewFixedTask() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -80,8 +80,8 @@ func TestTask_IntersectsWithTimeInterval(t *testing.T) {
 	}{
 		{"intersection", fields{twoMinutesAgo, now}, args{oneMinuteAgo, oneMinuteLater}, true},
 		{"nointersection", fields{twoMinutesAgo, oneMinuteAgo}, args{now, oneMinuteLater}, false},
-		{"edgeintersection", fields{oneMinuteAgo, now}, args{now, oneMinuteLater}, true},
-		{"edgeintersectioninv", fields{now, oneMinuteLater}, args{oneMinuteAgo, now}, true},
+		{"edgeintersection0", fields{oneMinuteAgo, now}, args{now, oneMinuteLater}, true},
+		{"edgeintersection0inv", fields{now, oneMinuteLater}, args{oneMinuteAgo, now}, true},
 		{"edgeintersection1", fields{now, oneMinuteLater}, args{oneMinuteLater, twoMinutesLater}, true},
 	}
 	for _, tt := range tests {
@@ -110,8 +110,8 @@ func TestTask_IntersectsWithTask(t *testing.T) {
 	}{
 		{"intersection", fields{twoMinutesAgo, now}, fields{oneMinuteAgo, oneMinuteLater}, true},
 		{"nointersection", fields{twoMinutesAgo, oneMinuteAgo}, fields{now, oneMinuteLater}, false},
-		{"edgeintersection", fields{oneMinuteAgo, now}, fields{now, oneMinuteLater}, true},
-		{"edgeintersectioninv", fields{now, oneMinuteLater}, fields{oneMinuteAgo, now}, true},
+		{"edgeintersection0", fields{oneMinuteAgo, now}, fields{now, oneMinuteLater}, true},
+		{"edgeintersection0inv", fields{now, oneMinuteLater}, fields{oneMinuteAgo, now}, true},
 		{"edgeintersection1", fields{now, oneMinuteLater}, fields{oneMinuteLater, twoMinutesLater}, true},
 	}
 	for _, tt := range tests {
