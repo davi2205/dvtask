@@ -10,12 +10,21 @@ import (
 
 // Scheduler schedules tasks
 type Scheduler struct {
+	startDate time.Time
+	deadline  time.Time
+	workStart time.Time
+	workEnd   time.Time
 	firstTask *Task
 }
 
-// NewScheduler creates a new Scheduler (may remove this in the future).
-func NewScheduler() *Scheduler {
-	return &Scheduler{}
+// NewScheduler creates a new Scheduler (may remove this in the future). To be tested.
+func NewScheduler(startDate, deadline, workStart, workEnd time.Time) *Scheduler {
+	return &Scheduler{
+		startDate: startDate,
+		deadline:  deadline,
+		workStart: workStart,
+		workEnd:   workEnd,
+	}
 }
 
 // ScheduledTaskAt returns the scheduled task at a specific time. To be tested.

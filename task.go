@@ -109,9 +109,15 @@ func (t *Task) ContainsTime(time time.Time) bool {
 
 // FreeTimeBetweenTasks returns the free time interval between tasks a and b. To be tested.
 func FreeTimeBetweenTasks(a, b *Task) (start, end time.Time, err error) {
+	if !a.isScheduled || !b.isScheduled {
+		return time.Time{}, time.Time{}, errors.New("a and b must be scheduled")
+	}
+
 	if a.next != b {
 		return time.Time{}, time.Time{}, errors.New("a and b must be consecutives tasks")
-	} else if b.start.Sub(a.end) <= time.Minute {
+	}
+
+	if b.start.Sub(a.end) <= time.Minute {
 		return a.end, a.end, nil
 	}
 	return a.end.Add(time.Minute), b.start.Add(-time.Minute), nil
