@@ -46,9 +46,18 @@ func (s *Scheduler) ScheduledTasksInTimeInterval(start, end time.Time) (first, l
 	return
 }
 
-// Not ready yet
-func (s *Scheduler) scheduleNonFixedTask(task *Task) error {
+// Not ready yet. To be tested.
+func (s *Scheduler) ScheduleTask(task *Task, fromTime time.Time) error {
+	if fromTime.Before(time.Now().Add(5 * time.Minute)) {
+		return errors.New("tasks must be scheduled at least five minutes from now")
+	}
+
+	taskDuration := task.Duration()
+
 	if s.firstTask == nil {
+		task.start = fromTime
+		task.end = fromTime.Add(taskDuration)
+
 		s.firstTask = task
 		return nil
 	}
@@ -66,16 +75,4 @@ func (s *Scheduler) scheduleNonFixedTask(task *Task) error {
 	task.isScheduled = true
 
 	return errors.New("not implemented yet")
-}
-
-// Not ready yet
-func (s *Scheduler) Schedule(task *Task) error {
-	if task.isScheduled {
-		return errors.New("task already scheduled")
-	}
-
-	if task.isFixed {
-		return errors.New("not implemented yet")
-	}
-	return s.scheduleNonFixedTask(task)
 }
