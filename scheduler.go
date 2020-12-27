@@ -12,13 +12,13 @@ import (
 type Scheduler struct {
 	startDate time.Time
 	deadline  time.Time
-	workStart time.Time
-	workEnd   time.Time
+	workStart Hour
+	workEnd   Hour
 	firstTask *Task
 }
 
 // NewScheduler creates a new Scheduler (may remove this in the future). To be tested.
-func NewScheduler(startDate, deadline, workStart, workEnd time.Time) *Scheduler {
+func NewScheduler(startDate, deadline time.Time, workStart, workEnd Hour) *Scheduler {
 	return &Scheduler{
 		startDate: startDate,
 		deadline:  deadline,
@@ -73,10 +73,8 @@ func (s *Scheduler) ScheduleTask(task *Task, fromTime time.Time) error {
 
 	for currentTask := s.firstTask; ; currentTask = currentTask.next {
 		if currentTask.priority < task.priority {
-
 			break
 		} else if currentTask.next == nil {
-
 			break
 		}
 	}
